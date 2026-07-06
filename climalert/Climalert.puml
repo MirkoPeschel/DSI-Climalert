@@ -1,0 +1,49 @@
+@startuml
+
+ReglaAlerta <|.. ReglaAltaTemperaturaYHumedad
+ReglaAlerta ..> DatosClimaticos
+ReglaAlerta ..> Alerta
+DatosClimaticos *-- CondicionClimatica
+Alerta --> DatosClimaticos
+Alerta --> TipoAlerta
+
+class DatosClimaticos {
+  - id: Long
+  - ubicacion: String
+  - fechaHoraRegistro: LocalDateTime
+  - condicionClimatica: CondicionClimatica
+}
+
+class CondicionClimatica <<Value Object>> {
+    - temperatura: Double
+    - humedad: Integer
+    --
+}
+
+interface ReglaAlerta {
+  --
+  + evaluar(DatosClimaticos clima): Optional<Alerta>
+}
+
+class ReglaAltaTemperaturaYHumedad {
+  - temperaturaMax: Double
+  - humedadMax: Integer
+  --
+  + evaluar(DatosClimaticos clima): Optional<Alerta>
+}
+
+class Alerta {
+    - id: Long
+    - tipo: TipoAlerta
+    - mensaje: String
+    - fechaHoraGeneracion: LocalDateTime
+    - enviada: Boolean
+    - datosClimaticos: DatosClimaticos
+    --
+}
+
+enum TipoAlerta {
+    ALERTA_CALOR_HUMEDAD
+}
+
+@enduml
